@@ -1,0 +1,29 @@
+<!-- DO NOT MODIFY THIS FILE -->
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<title>What Beats <%- target %>?</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/style.css" type="text/css">
+</head>
+
+<body>
+	<div class="header">What Beats <%- target %>?</div>	
+	<br>
+	<img src="<%- sprite %>" alt="Pokemon image here" width="250" height="250">
+
+	<hr>
+	Your objective is to submit a pokemon and move that will always KO <%- target %> from full HP. <br>
+	When a combination is submitted, the attacking pokemon becomes the next target. <br>
+	Items and abilities are not considered for the damage calculation. <br><br>
+
+	<a href="/suggest" class="red">Submit a pokemon and move</a>
+	
+	<hr>
+	Previous submissions: <br> <br>
+	<%- history %>
+</body>
+
+</html>

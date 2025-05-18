@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<title>Submit a kill!</title>
+	<link rel="stylesheet" href="/styles/style.css" type="text/css">
+</head>
+
+<body>
+	<div class="header">Submit a KO</div>
+	<form action="/suggest" method="post">
+		<fieldset>
+			<label>The pokemon <input name="pokemon"></label> <br>
+			is guaranteed to one-hit KO a full-health <%- target %> with the move <br>
+			<input name="move" size="10">.
+			
+		</fieldset>
+		<br>
+		<input type="submit" value="Submit Move"/>
+	</form>
+	<hr>
+	<a href="/">Back to home</a>
+</body>
+
+</html>
