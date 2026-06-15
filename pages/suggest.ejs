@@ -11,16 +11,60 @@
 	<div class="header">Submit a KO</div>
 	<form action="/suggest" method="post">
 		<fieldset>
-			<label>The pokemon <input name="pokemon"></label> <br>
+			<label>The pokemon <input name="pokemon" id="pokemon"></label>
+			using the ability
+			<select name="ability" id="ability">
+				<option value="">(enter a pokemon first)</option>
+			</select> <br>
 			is guaranteed to one-hit KO a full-health <%- target %> with the move <br>
 			<input name="move" size="10">.
-			
+
 		</fieldset>
 		<br>
 		<input type="submit" value="Submit Move"/>
 	</form>
 	<hr>
 	<a href="/">Back to home</a>
+
+	<script>
+		const pokemonInput = document.getElementById("pokemon");
+		const abilitySelect = document.getElementById("ability");
+
+		function toTitleCase(slug) {
+			return slug.split("-").map(function (w) {
+				return w.charAt(0).toUpperCase() + w.slice(1);
+			}).join(" ");
+		}
+
+		async function loadAbilities() {
+			const name = pokemonInput.value.trim().toLowerCase();
+			if (!name) {
+				abilitySelect.innerHTML = '<option value="">(enter a pokemon first)</option>';
+				return;
+			}
+			try {
+				const response = await fetch("https://pokeapi.co/api/v2/pokemon/" + name);
+				if (!response.ok) {
+					abilitySelect.innerHTML = '<option value="">(unknown pokemon)</option>';
+					return;
+				}
+				const data = await response.json();
+				abilitySelect.innerHTML = "";
+				data.abilities.forEach(function (entry) {
+					const ability = toTitleCase(entry.ability.name);
+					const option = document.createElement("option");
+					option.value = ability;
+					option.textContent = ability + (entry.is_hidden ? " (hidden)" : "");
+					abilitySelect.appendChild(option);
+				});
+			} catch (e) {
+				abilitySelect.innerHTML = '<option value="">(could not load abilities)</option>';
+			}
+		}
+
+		pokemonInput.addEventListener("change", loadAbilities);
+		pokemonInput.addEventListener("blur", loadAbilities);
+	</script>
 </body>
 
 </html>

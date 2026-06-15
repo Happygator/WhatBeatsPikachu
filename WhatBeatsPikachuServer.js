@@ -90,16 +90,20 @@ function learnsMove(pokeData, move) {
     return pokeData['moves'].find(item => item['move']['name'] === move.toLowerCase()) != undefined;
 }
 
+function hasAbility(pokeData, ability) {
+    return pokeData['abilities'].find(item => item['ability']['name'] === ability.toLowerCase().replace(/ /g, "-")) != undefined;
+}
+
 function capitalize(str) {
     return str.split(" ").map((word) => { 
         return word[0].toUpperCase() + word.substring(1); 
     }).join(" ");
 }
 
-function damage(p1, p2, move) {
+function damage(p1, p2, move, ability) {
     const result = calculate(
         gen,
-        new Pokemon(gen, p1),
+        new Pokemon(gen, p1, ability ? { ability: ability } : {}),
         new Pokemon(gen, p2),
         new Move(gen, move)
       );
@@ -138,7 +142,7 @@ app.get("/suggest", (request, response) => {
   });
 
 app.post("/suggest", (req, res) => {
-    let {pokemon, move} = req.body;
+    let {pokemon, move, ability} = req.body;
     pokemon = capitalize(pokemon);
     let move2 = move.replace(" ", "-");
     
@@ -155,8 +159,12 @@ app.post("/suggest", (req, res) => {
         if (data == null) {
             return null;
         } else if (learnsMove(data, move2)) {
+            if (ability && !hasAbility(data, ability)) {
+                res.send(`<script>alert("Error: ${capitalize(data['name'])} doesn't have the ability ${ability}."); window.location.href = "/suggest"; </script>`)
+                return null;
+            }
             const target = await getCurrentTarget();
-            let damageResult = damage(pokemon, target, move);
+            let damageResult = damage(pokemon, target, move, ability);
             if (damageResult.damage != 0  && damageResult.kochance().chance == 1 && damageResult.kochance().n == 1) {
                 let variables = {p1: pokemon, p2: target, move: move, text: damageResult.fullDesc()}
                 // res.send(`<script>alert("Inserting with ${pokemon} ${target} ${move}"); window.location.href = "/suggest"; </script>`)
