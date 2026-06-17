@@ -1,0 +1,7 @@
+# Environment files with secrets
+.env
+*.env
+credentials/.env
+
+# Dependencies
+node_modules/
